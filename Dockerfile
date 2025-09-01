@@ -1,39 +1,17 @@
-# ---- Build Stage ----
-FROM python:3.12-slim-bookworm AS builder
+# Don't Remove Credit @VJ_Botz
+# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
+# Ask Doubt on telegram @KingVJ01
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc g++ make git \
-    libjpeg-dev zlib1g-dev libpng-dev \
-    && rm -rf /var/lib/apt/lists/*
+FROM python:3.11-slim-bookworm
 
-# Copy requirements
-COPY requirements.txt .
+RUN apt update && apt upgrade -y
+RUN apt install git -y
+COPY requirements.txt /requirements.txt
 
-# Upgrade pip and install dependencies into a temp folder
-RUN pip3 install --no-cache-dir -U pip \
-    && pip3 install --no-cache-dir --prefix=/install -r requirements.txt
+RUN pip3 install -U pip && pip3 install -U -r requirements.txt
 
-
-# ---- Runtime Stage ----
-FROM python:3.12-slim-bookworm
-
-# Install runtime dependencies (no compilers needed)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libjpeg62-turbo \
-    zlib1g \
-    libpng16-16 \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy installed python packages from builder
-COPY --from=builder /install /usr/local
-
-# Set working directory
+RUN mkdir /VJ-FILTER-BOT
 WORKDIR /VJ-FILTER-BOT
+COPY . /VJ-FILTER-BOT
 
-# Copy project files
-COPY . .
-
-# Run the bot
 CMD ["python", "bot.py"]
