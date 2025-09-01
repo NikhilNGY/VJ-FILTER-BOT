@@ -2,7 +2,7 @@
 # Subscribe YouTube Channel For Amazing Bot @Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-FROM python:3.11-slim-bookworm
+FROM python:3.10-slim-bookworm
 
 RUN apt update && apt upgrade -y
 RUN apt install git -y
@@ -15,3 +15,4 @@ WORKDIR /VJ-FILTER-BOT
 COPY . /VJ-FILTER-BOT
 
 CMD ["python", "bot.py"]
+
