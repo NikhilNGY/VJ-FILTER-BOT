@@ -31,21 +31,21 @@ BUTTONS1 = {}
 BUTTONS2 = {}
 SPELL_CHECK = {}
 
-reqstr1 = query.from_user.id if query.from_user else 0
+@Client.on_callback_query(filters.regex(r"^spol"))
+async def advantage_spoll_choker(bot, query):
+    # Early validation of user ID
+    reqstr1 = query.from_user.id if query.from_user else 0
+    if not reqstr1 or reqstr1 == 0:
+        logger.warning(f"Invalid user ID in advantage_spoll_choker: {reqstr1!r}")
+        return await query.answer("Could not identify the user.", show_alert=True)
 
-# Validate the user ID before fetching
-if not reqstr1 or int(reqstr1) == 0:
-    # Skip trying to resolve a user—just log or notify if needed
-    logger.warning(f"Invalid user ID encountered in advantage_spoll_choker: {reqstr1!r}")
-    # You can choose to skip further processing or handle differently
-    return
+    try:
+        reqstr = await bot.get_users(reqstr1)
+    except Exception as e:
+        await bot.send_message(LOG_CHANNEL, f"Error resolving user: {e}")
+        return await query.answer("Error occurred while processing your request.", show_alert=True)
 
-try:
-    reqstr = await bot.get_users(reqstr1)
-except Exception as e:
-    # Handle failures (for example, user not found)
-    await bot.send_message(LOG_CHANNEL, f"Error resolving user in advantage_spoll_choker: {e}")
-    return
+    # The rest of your existing advantage_spoll_choker logic...
 
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
@@ -3302,4 +3302,5 @@ async def global_filters(client, message, text=False):
                 break
     else:
         return False
+
 
